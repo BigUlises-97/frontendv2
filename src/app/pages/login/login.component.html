@@ -17,7 +17,7 @@
 
                 <span *ngIf="loginForm.submitted && loginForm.controls['password'].errors" class="text-danger animated fadeIn">La contraseña es obligatoria</span>
                 <div class="wrap-input100 m-b-16" data-validate="Password is required">
-                    <input class="input100" type="password" name="password" [(ngModel)]="usuario.password" required minlength="6" placeholder="Password">
+                    <input class="input100" type="password" name="password" [(ngModel)]="usuario.password" required minlength="4" placeholder="Password">
                     <span class="focus-input100"></span>
                 </div>
 

@@ -14,10 +14,10 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): boolean{
 
-    if(this.auth.autenticado()){
+    if(this.auth.autenticado()){ //Si regresa verdadero entonces autentica
       return true;
     }else{
-      this.router.navigateByUrl('/login');
+      this.router.navigateByUrl('/login'); //Si no, te regresa al login
       return false;
     }
   }

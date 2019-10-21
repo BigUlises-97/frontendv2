@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../models/user.model';
+import { UserModel } from '../../models/user.model';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import Swal from 'sweetalert2';
@@ -8,12 +8,11 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registro',
-  templateUrl: './registro.component.html',
-  styleUrls: ['./registro.component.css']
+  templateUrl: './registro.component.html'
 })
 export class RegistroComponent implements OnInit {
 
-  usuario: User = new User();
+  usuario: UserModel = new UserModel();
   recordarme = false;
 
   constructor( private auth:AuthService,
@@ -21,7 +20,7 @@ export class RegistroComponent implements OnInit {
             ) { }
 
   ngOnInit() {  }
-  
+  /*
    registro(form:NgForm){
       if(form.invalid){ return; }
       
@@ -57,5 +56,5 @@ export class RegistroComponent implements OnInit {
 
    }
 
-
+*/
 }

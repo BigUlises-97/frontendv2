@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../models/user.model';
+import { UserModel } from '../../models/user.model';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
@@ -8,12 +8,11 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
 
-  usuario: User = new User();
+  usuario: UserModel = new UserModel();
   recordarme = false;
 
   constructor(private authService:AuthService,
@@ -28,7 +27,8 @@ export class LoginComponent implements OnInit {
   }
 
   login(form:NgForm){
-    if(form.invalid){ return; }
+
+    if(form.invalid) { return; } //Validacion si es invalido el formulario
 
     //----- POPUP LOADING -----
     Swal.fire({
@@ -36,33 +36,32 @@ export class LoginComponent implements OnInit {
       type: 'info',
       text: 'Espere por favor...'
     });
+
     Swal.showLoading();
     //-------------------------
 
     this.authService.login(this.usuario).subscribe( resp => {
-      console.log(resp);
+    // --- Cerrar el popup ----
+      Swal.close(); 
+    // ------------------
 
-      Swal.close(); //cerrar el popup
-      
       if(this.recordarme){
         localStorage.setItem('email', this.usuario.email);
       }
 
       this.router.navigateByUrl('/home');
 
-    },(err)=>{
-      
-      console.log(err.error.error.message);
-
-    //---- POPUP ERROR ----
-    Swal.fire({
-      type: 'error',
-      text: err.error.error.message,
-      title: 'Error al autenticar' 
-    });
-
-    });
-
+    }, (err) => {
+         console.log(err.name);
+    
+         //---- POPUP ERROR ----
+         Swal.fire({
+           type: 'error',
+           text: err.name,
+           title: 'Error al autenticar' 
+         });
+         //------------------
+      });
   }
 
 }

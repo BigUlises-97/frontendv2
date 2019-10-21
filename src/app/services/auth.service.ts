@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../models/user.model';
+import { UserModel } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
@@ -8,40 +8,46 @@ import { map } from 'rxjs/operators';
 })
 export class AuthService {
 
-  private registrarUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
-  private ingresarUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=';
-
-  private API_KEY = 'AIzaSyA0UG77HFljumnPETG69l9vvHmXL4JbB5E';
+  private API_URL = 'http://localhost:3000/api/';
 
   userToken: string;
 
-  //Crear nuevos
-  //https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
-
-  //Login
-  //https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]
-
   constructor( private http:HttpClient) { 
     this.leerToken(); //Para saber si hay token
+    //console.log('Servicio arrancado pariente');
   }
 
   logout(){
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
   
-  login(usuario:User){
+  login(usuario:UserModel){
+    
     const authData = {
       email: usuario.email,
       password: usuario.password,
-      returnSecureToken: true
+      gethash: true
     };
 
-    return this.http.post(`${this.ingresarUrl}${this.API_KEY}`, authData).pipe( map( resp =>{
-      this.guardarToken(resp['idToken']);
+    return this.http.post(`${this.API_URL}login`, authData).pipe( map( resp =>{
+      this.guardarToken(resp['token']);
+      //Guardar info usuario sin datos sensibles - Sujeto a cambios
+      let infoResponse = resp['user'];
+      let user = {
+        id: infoResponse.id,
+        name: infoResponse.name,
+        surname: infoResponse.surname,
+        email: infoResponse.email,
+        role: infoResponse.role
+      }
+      //----------------
+      localStorage.setItem('user', JSON.stringify(user));
       return resp;
     }));
 
   }
+  /* PENDIENTE MODIFICAR 
   //New user
   registrar(usuario:User){
     const authData = {
@@ -55,17 +61,11 @@ export class AuthService {
       return resp;
     }));
   }
-
+*/
   
   private guardarToken( idToken:string ){
     this.userToken = idToken;
     localStorage.setItem('token', idToken);
-
-    //---- validacion del token
-    let hoy = new Date();
-    hoy.setSeconds(3600);
-    localStorage.setItem('expira', hoy.getTime().toString());
-
   }
 
   leerToken(){
@@ -78,20 +78,19 @@ export class AuthService {
 
   //Comprobar por validacion que este autenticado
   autenticado():boolean{
-    if(this.userToken.length < 2){
-      return false;
-    }
-    const expira = Number(localStorage.getItem('expira'));
-    const fechaExpiracion = new Date();
-    fechaExpiracion.setTime(expira);
-
-    if(fechaExpiracion> new Date()){
+    if(this.userToken.length>2){
       return true;
     }else{
       return false;
     }
-    //old code
-    //return this.userToken.length>2;
+  }
+
+  leerUserInfo(){
+    if(localStorage.getItem('user')){
+      let str = localStorage.getItem('user');
+      let userObject = JSON.parse(str);
+      return userObject;
+    }
   }
 
 }
