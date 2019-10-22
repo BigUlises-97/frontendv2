@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
     //-------------------------
 
     this.authService.login(this.usuario).subscribe( resp => {
+      
     // --- Cerrar el popup ----
       Swal.close(); 
     // ------------------
@@ -52,7 +53,7 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl('/home');
 
     }, (err) => {
-         console.log(err.name);
+         console.log(err);
     
          //---- POPUP ERROR ----
          Swal.fire({

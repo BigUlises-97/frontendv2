@@ -1,6 +1,18 @@
 <div class="m-5">
-
     <h1>Mi aplicación secreta</h1>
     <hr>
+    <div class="card">
+        <div class="card-header">
+            <h1>Datos del usuario</h1>
+        </div>
+        <div class="card-body">
+            <p>{{usuario.id}}</p>
+            <p>{{usuario.name}}</p>
+            <p>{{usuario.surname}}</p>
+            <p>{{usuario.email}}</p>
+            <p *ngIf="usuario.role">Admin</p>
+            <p *ngIf="!usuario.role">Normal</p>
+        </div>
+    </div>
     <button class="btn btn-outline-danger" (click)="salir()">Cerrar sesión</button>
 </div>

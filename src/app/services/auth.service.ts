@@ -31,6 +31,7 @@ export class AuthService {
     };
 
     return this.http.post(`${this.API_URL}login`, authData).pipe( map( resp =>{
+      //console.log(resp);
       this.guardarToken(resp['token']);
       //Guardar info usuario sin datos sensibles - Sujeto a cambios
       let infoResponse = resp['user'];
